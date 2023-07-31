@@ -1,0 +1,34 @@
+Spliteasy app is the easiest way to share expenses among a group of people. The 
+app takes input form the users and performs the necessary calculations to display 
+the result.
+In today’s era, due to online payments and cashless transactions, if a group of 
+people have to pay for some transaction, only one or two people in the group 
+make the payment. Other people calculate their contribution later and pay back the 
+amount they owe. This app fetches data for all users and all transactions and 
+calculates the exact amount to be paid or received, thus making splitting of bills 
+and sharing of expenses easier. We have created a basic version of this app which 
+can be developed on a large and more complex scale.
+
+
+-> Working
+The program is designed in such a way 
+that it takes input from users for their 
+names , amount spent by each user for 
+each transaction , etc. It then calculates 
+the average that is contribution for each 
+person and the total amount spent by 
+each person. The respective difference 
+between these two is how much each 
+involved person owes.
+
+-> About our Code
+Our code takes the following information as input:
+1. Total number of users
+2. Names of the users
+3. Place where transaction occurred
+4. Amount paid by each user in the respective transaction
+The output contains the following information:
+1. Total contribution per person considering all transactions
+2. How much every person has to pay or receive
+3. Whether the bill for each person is settled or not.
+
