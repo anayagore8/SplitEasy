@@ -1,0 +1,129 @@
+import tkinter as tk
+from tkinter import ttk, messagebox
+
+class ExpenseTracker:
+    users = []
+    transactions = []
+
+    @classmethod
+    def add_user(cls, user_name):
+        cls.users.append(user_name)
+
+    @classmethod
+    def add_transaction(cls, user_name, place, amount):
+        cls.transactions.append((user_name, place, amount))
+
+    @classmethod
+    def get_summary(cls):
+        total_amount = sum(amount for _, _, amount in cls.transactions)
+        num_users = len(cls.users)
+        per_person_contribution = total_amount / num_users
+
+        summary = {}
+        for user in cls.users:
+            user_contribution = sum(amount for u, _, amount in cls.transactions if u == user)
+            summary[user] = user_contribution - per_person_contribution
+
+        return summary
+
+def add_user_callback():
+    user_name = user_input.get().strip()
+    if user_name:
+        ExpenseTracker.add_user(user_name)
+        user_input.delete(0, tk.END)
+        render_user_list()
+
+def add_transaction_callback():
+    user_name = user_list.get(tk.ACTIVE)
+    place = place_input.get().strip()
+    amount = amount_input.get().strip()
+    if user_name and place and amount:
+        try:
+            amount = float(amount)
+            ExpenseTracker.add_transaction(user_name, place, amount)
+            place_input.delete(0, tk.END)
+            amount_input.delete(0, tk.END)
+        except ValueError:
+            messagebox.showerror("Error", "Invalid amount, please enter a numeric value.")
+    else:
+        messagebox.showerror("Error", "Please select a user and fill in both place and amount.")
+
+def get_summary_callback():
+    summary = ExpenseTracker.get_summary()
+    summary_text = ""
+    for user, contribution in summary.items():
+        if contribution > 0:
+            summary_text += f"{user} has to receive {contribution:.2f} rupees.\n"
+        elif contribution < 0:
+            summary_text += f"{user} has to pay {abs(contribution):.2f} rupees.\n"
+        else:
+            summary_text += f"Bill for {user} is settled.\n"
+
+    messagebox.showinfo("Summary", summary_text)
+
+def render_user_list():
+    user_list.delete(0, tk.END)
+    for user in ExpenseTracker.users:
+        user_list.insert(tk.END, user)
+
+root = tk.Tk()
+root.title("SplitEasy")
+root.geometry("600x500")
+root.configure(bg="#FFD700")
+
+style = ttk.Style()
+style.theme_use("clam")
+
+# Adding custom colors to the style
+style.configure("TButton",
+                background="#FF4500",  # Orange-Red color for buttons
+                foreground="white",  # White text color for buttons
+                font=("Helvetica", 12, "bold"),
+                padding=10)
+style.map("TButton",
+          background=[("active", "#FF8C00")],  # Darker orange color when the button is active
+          foreground=[("active", "white")])
+
+style.configure("TLabel",
+                background="#FFD700",  # Yellow color for labels
+                foreground="#FF4500",  # Orange-Red color for label text
+                font=("Helvetica", 14, "bold"))
+
+style.configure("TEntry",
+                font=("Helvetica", 12))
+
+user_label = ttk.Label(root, text="Enter the names of users:")
+user_label.pack()
+
+user_input = ttk.Entry(root)
+user_input.pack()
+
+add_user_button = ttk.Button(root, text="Add User", command=add_user_callback)
+add_user_button.pack()
+
+user_list = tk.Listbox(root, bg="#FFA07A", fg="black", font=("Helvetica", 12))
+user_list.pack()
+
+transaction_label = ttk.Label(root, text="Add Transaction:")
+transaction_label.pack()
+
+place_label = ttk.Label(root, text="Place:")
+place_label.pack()
+
+place_input = ttk.Entry(root)
+place_input.pack()
+
+amount_label = ttk.Label(root, text="Amount:")
+amount_label.pack()
+
+amount_input = ttk.Entry(root)
+amount_input.pack()
+
+add_transaction_button = ttk.Button(root, text="Add Transaction", command=add_transaction_callback)
+add_transaction_button.pack()
+
+get_summary_button = ttk.Button(root, text="Get Summary", command=get_summary_callback)
+get_summary_button.pack()
+
+root.mainloop()
+
